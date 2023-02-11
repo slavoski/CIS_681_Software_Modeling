@@ -1,9 +1,8 @@
 ﻿using MaterialDesignThemes.Wpf;
-using Microsoft.Win32;
 using MvvmHelpers;
 using MvvmHelpers.Commands;
-using Newtonsoft.Json;
-using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace CSE_681_Project_1.Main
 {
@@ -11,70 +10,60 @@ namespace CSE_681_Project_1.Main
 	{
 		#region member variables
 
-		private string _fileName = "";
-		private bool _isFileLoaded;
-		private bool _isFileParsed;
-		private string _mainFile = "Load File to Edit";
-		private GameInfo _selectedGame;
-		private string m_fullFilePath = "";
+		private Visibility _isAddGameDialogVisible = Visibility.Hidden;
+		private Visibility _isEditGameDialogVisible = Visibility.Hidden;
+		private GameInfo _newGameInfo = new GameInfo();
+		private int _selectedIndex;
 
 		#endregion member variables
 
 		#region properties
 
-		public ObservableRangeCollection<GameInfo> AllGames
+		public FileManagement FileManagement
 		{
 			get;
 			set;
-		} = new ObservableRangeCollection<GameInfo>();
+		} = new FileManagement();
 
-		public string FileName
+		public string GameInfoHeader => DataManager.Instance.SelectedGame?.HomeVsTeam ?? "";
+
+		public Visibility IsAddGameDialogVisible
 		{
-			get => _fileName;
+			get => _isAddGameDialogVisible;
 			set
 			{
-				_fileName = value;
-				OnPropertyChanged(nameof(FileName));
+				_isAddGameDialogVisible = value;
+				OnPropertyChanged(nameof(IsAddGameDialogVisible));
 			}
 		}
 
-		public bool IsFileLoaded
+		public Visibility IsEditGameDialogVisible
 		{
-			get => _isFileLoaded;
+			get => _isEditGameDialogVisible;
 			set
 			{
-				_isFileLoaded = value;
-				OnPropertyChanged(nameof(IsFileLoaded));
+				_isAddGameDialogVisible = value;
+				OnPropertyChanged(nameof(_isEditGameDialogVisible));
 			}
 		}
 
-		public bool IsFileParsed
+		public GameInfo NewGameInfo
 		{
-			get => _isFileParsed && _isFileLoaded;
+			get => _newGameInfo;
 			set
 			{
-				_isFileParsed = value;
-				OnPropertyChanged(nameof(IsFileParsed));
+				_newGameInfo = value;
+				OnPropertyChanged(nameof(NewGameInfo));
 			}
 		}
 
-		public string MainFile
+		public int SelectedIndex
 		{
-			get => _mainFile;
+			get => _selectedIndex;
 			set
 			{
-				_mainFile = value;
-				OnPropertyChanged(nameof(MainFile));
-			}
-		}
-
-		public GameInfo SelectedGame
-		{
-			get => _selectedGame;
-			set
-			{
-				_selectedGame = value;
-				OnPropertyChanged(nameof(SelectedGame));
+				_selectedIndex = value;
+				OnPropertyChanged(nameof(SelectedIndex));
 			}
 		}
 
@@ -88,40 +77,46 @@ namespace CSE_681_Project_1.Main
 
 		#region Commands
 
+		public Command ChangeNewGameVisibilityCommand
+		{
+			get;
+			private set;
+		}
+
+		public Command CreateGameCommand
+		{
+			get;
+			private set;
+		}
+
 		public Command CreateNewFileCommand
 		{
 			get;
-			set;
+			private set;
 		}
 
 		public Command GoBackCommand
 		{
 			get;
-			set;
+			private set;
 		}
 
 		public Command GoForwardCommand
 		{
 			get;
-			set;
+			private set;
 		}
 
 		public Command OpenCommand
 		{
 			get;
-			set;
-		}
-
-		public Command ParseJsonCommand
-		{
-			get;
-			set;
+			private set;
 		}
 
 		public Command SaveCommand
 		{
 			get;
-			set;
+			private set;
 		}
 
 		#endregion Commands
@@ -131,108 +126,57 @@ namespace CSE_681_Project_1.Main
 		public MainWindowViewModel()
 		{
 			InitializeCommands();
+			DataManager.Instance.PropertyChanged += Instance_PropertyChanged;
+		}
+
+		private void Instance_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(DataManager.Instance.SelectedGame) && FileManagement.IsFileLoaded == true)
+			{
+				SelectedIndex = 1;
+				OnPropertyChanged(nameof(GameInfoHeader));
+			}
 		}
 
 		#endregion constructor / destructor
 
 		#region methods
 
-		private void ChangeIndex(bool forward = false)
+		public async Task CreateGame()
 		{
-			if (AllGames.Count > 0)
-			{
-				var oldIndex = AllGames.IndexOf(SelectedGame);
-				var newIndex = AllGames.IndexOf(SelectedGame);
+			DataManager.Instance.AllGames.Add(NewGameInfo);
 
-				oldIndex = oldIndex < 0 ? 0 : oldIndex;
-				newIndex = forward ? newIndex + 1 : newIndex - 1;
+			NewGameInfo = new GameInfo();
 
-				if (newIndex < 0)
-				{
-					newIndex = AllGames.Count - 1;
-				}
-				else if (newIndex >= AllGames.Count)
-				{
-					newIndex = 0;
-				}
-				SelectedGame = AllGames[newIndex];
-			}
-		}
+			IsAddGameDialogVisible = Visibility.Hidden;
 
-		private void CreateNewFile()
-		{
-			SaveFileDialog sfd = new SaveFileDialog()
-			{
-				DefaultExt = ".json",
-				FileName = "JSON",
-				Filter = "JSON (.json)|*.json",
-				OverwritePrompt = true,
-				Title = "Save JSON File"
-			};
-
-			if (sfd.ShowDialog() == true)
-			{
-				//File.WriteAllText(sfd.FileName, "");
-				//OpenFileWithPath(sfd.FileName, sfd.SafeFileName);
-			}
-		}
-
-		private void GoBack()
-		{
-			ChangeIndex();
-		}
-
-		private void GoForward()
-		{
-			ChangeIndex(true);
+			await Task.CompletedTask;
 		}
 
 		private void InitializeCommands()
 		{
-			OpenCommand = new Command(() => OpenFile());
-			SaveCommand = new Command(() => SaveFile());
-			ParseJsonCommand = new Command(() => ParseJson());
-			CreateNewFileCommand = new Command(() => CreateNewFile());
-			GoBackCommand = new Command(() => GoBack());
-			GoForwardCommand = new Command(() => GoForward());
-		}
+			CreateGameCommand = new Command(async () => await CreateGame());
 
-		private void OpenFile()
-		{
-			var openFileDialog = new OpenFileDialog()
-			{
-				DefaultExt = ".json",
-				Filter = "JSON (.json)|*.json|Text (.txt)|*.txt",
-				Multiselect = false
-			};
+			OpenCommand = new Command(() =>
+				{
+					FileManagement.IsFileLoaded = false;
+					DataManager.Instance.SelectedGame = new GameInfo();
+					FileManagement.OpenFile(DataManager.Instance.AllGames);
+				});
 
-			if (openFileDialog.ShowDialog() == true)
-			{
-				OpenFileWithPath(openFileDialog.FileName, openFileDialog.SafeFileName);
-			}
-		}
+			SaveCommand = new Command(() => FileManagement.SaveFile(DataManager.Instance.AllGames));
+			CreateNewFileCommand = new Command(() => FileManagement.CreateNewFile());
+			GoBackCommand = new Command(() =>
+				{
+					DataManager.Instance.SelectedGame = DataManager.Instance.AllGames.GoBack(DataManager.Instance.SelectedGame);
+				});
 
-		private void OpenFileWithPath(string _fullFilePathName, string _fileName)
-		{
-			m_fullFilePath = _fullFilePathName;
-			FileName = _fileName;
-			using (StreamReader streamReader = new StreamReader(m_fullFilePath))
-			{
-				MainFile = streamReader.ReadToEnd();
-				AllGames.ReplaceRange(JsonConvert.DeserializeObject<ObservableRangeCollection<GameInfo>>(MainFile));
+			GoForwardCommand = new Command(() =>
+				{
+					DataManager.Instance.SelectedGame = DataManager.Instance.AllGames.GoForward(DataManager.Instance.SelectedGame);
+				});
 
-				IsFileLoaded = true;
-				IsFileParsed = false;
-			}
-		}
-
-		private void ParseJson()
-		{
-		}
-
-		private void SaveFile()
-		{
-			File.WriteAllText(m_fullFilePath, MainFile);
+			ChangeNewGameVisibilityCommand = new Command(() => IsAddGameDialogVisible = Visibility.Visible);
 		}
 
 		#endregion methods

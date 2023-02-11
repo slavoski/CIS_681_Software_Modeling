@@ -4,6 +4,7 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:dialog="clr-namespace:CSE_681_Project_1.Dialog"
 		xmlns:vm="clr-namespace:CSE_681_Project_1.Main"
 		mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="1000"
@@ -17,164 +18,169 @@
 		<vm:MainWindowViewModel />
 	</Window.DataContext>
 	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
 
-		<ToolBar Grid.Row="0" Grid.ColumnSpan="2">
-			<Button ToolTip="New File" Content="{materialDesign:PackIcon Kind=FileDocumentPlus}" Command="{Binding CreateNewFileCommand}" />
-			<Button ToolTip="Open File" Content="{materialDesign:PackIcon Kind=FolderOpen}" Command="{Binding OpenCommand}" />
-			<Button ToolTip="Save File" Content="{materialDesign:PackIcon Kind=ContentSave}" Command="{Binding SaveCommand}" IsEnabled="{Binding IsFileLoaded}" />
-		</ToolBar>
-		<GroupBox Grid.Row="1" Margin="10" Header="{Binding FileName}" materialDesign:ColorZoneAssist.Mode="SecondaryMid">
-			<TextBox Grid.Row="1" Text="{Binding MainFile, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" IsEnabled="{Binding IsFileLoaded}" />
-		</GroupBox>
+			<ToolBar Grid.Row="0" Grid.ColumnSpan="2">
+				<Button ToolTip="New File" Content="{materialDesign:PackIcon Kind=FileDocumentPlus}" Command="{Binding CreateNewFileCommand}" />
+				<Button ToolTip="Open File" Content="{materialDesign:PackIcon Kind=FolderOpen}" Command="{Binding OpenCommand}" />
+				<Button ToolTip="Save File" Content="{materialDesign:PackIcon Kind=ContentSave}" Command="{Binding SaveCommand}" IsEnabled="{Binding FileManagement.IsFileLoaded}" />
+			</ToolBar>
+			<GroupBox Grid.Row="1" Margin="10" Header="{Binding FileManagement.FileName}" materialDesign:ColorZoneAssist.Mode="SecondaryMid">
+				<TextBox Grid.Row="1" Text="{Binding FileManagement.MainFile, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" IsEnabled="{Binding FileManagement.IsFileLoaded}" />
+			</GroupBox>
 
-		<TabControl Grid.Row="1" Grid.Column="2" Style="{StaticResource MaterialDesignFilledTabControl}">
-			<TabItem Header="Games">
-				<ListView ItemsSource="{Binding AllGames}" SelectedItem="{Binding SelectedGame}">
-					<ListView.ItemTemplate>
-						<DataTemplate>
+			<TabControl Grid.Row="1" Grid.Column="2" Style="{StaticResource MaterialDesignFilledTabControl}" SelectedIndex="{Binding SelectedIndex}">
+				<TabItem Header="Games">
+					<Grid>
+						<ListView ItemsSource="{Binding Source={x:Static vm:DataManager.Instance}, Path=AllGames}" SelectedItem="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame}">
+							<ListView.ItemTemplate>
+								<DataTemplate>
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto" MinWidth="150" />
+											<ColumnDefinition Width="*" MinWidth="100" />
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition Width="Auto" />
+										</Grid.ColumnDefinitions>
+										<Grid.RowDefinitions>
+											<RowDefinition />
+											<RowDefinition />
+											<RowDefinition />
+										</Grid.RowDefinitions>
+										<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+											<Label Content="Date: " />
+											<Label Content="{Binding date}" />
+										</StackPanel>
+										<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
+											<Label Content="Home Team: " />
+											<Label Content="{Binding homeTeamName}" />
+										</StackPanel>
+										<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+											<Label Content="VS " />
+										</StackPanel>
+
+										<StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+											<Label Content="Away Team:" />
+											<Label Content="{Binding visTeamName}" />
+										</StackPanel>
+
+										<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
+											<Label Content="Final: " />
+											<Label Content="{Binding isFinal}" />
+										</StackPanel>
+										<StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left">
+											<Label Content="Neutral: " />
+											<Label Content="{Binding neutral}" />
+										</StackPanel>
+									</Grid>
+								</DataTemplate>
+							</ListView.ItemTemplate>
+						</ListView>
+						<Button Margin="0,0,40,20" HorizontalAlignment="Right" VerticalAlignment="Bottom" ToolTip="Add Game" Style="{DynamicResource MaterialDesignFloatingActionButton}" Command="{Binding ChangeNewGameVisibilityCommand}">
+							<Button.Content>
+								<TextBlock Text="+" FontSize="64" FontStretch="UltraCondensed" FontWeight="ExtraLight" HorizontalAlignment="Center" VerticalAlignment="Center" />
+							</Button.Content>
+						</Button>
+					</Grid>
+				</TabItem>
+				<TabItem Header="Selected Game">
+					<GroupBox Margin="10">
+						<GroupBox.Header>
 							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" MinWidth="150" />
-									<ColumnDefinition Width="*" MinWidth="100" />
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="Auto" />
-								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition />
-									<RowDefinition />
-									<RowDefinition />
-								</Grid.RowDefinitions>
-								<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-									<Label Content="Date: " />
-									<Label Content="{Binding date}" />
-								</StackPanel>
-								<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
-									<Label Content="Home Team: " />
-									<Label Content="{Binding homeTeamName}" />
-								</StackPanel>
-								<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-									<Label Content="VS " />
-								</StackPanel>
-
-								<StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-									<Label Content="Away Team:" />
-									<Label Content="{Binding visTeamName}" />
-								</StackPanel>
-
-								<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
-									<Label Content="Final: " />
-									<Label Content="{Binding isFinal}" />
-								</StackPanel>
-								<StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left">
-									<Label Content="Neutral: " />
-									<Label Content="{Binding neutral}" />
-								</StackPanel>
+								<Button Content="Previous" Width="128" Background="{DynamicResource AttentionToActionBrush}" HorizontalAlignment="Left" Command="{Binding GoBackCommand}" />
+								<TextBlock Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="{Binding GameInfoHeader}" HorizontalAlignment="Center" Foreground="Black" />
+								<Button Content="Next" Width="128" Background="{DynamicResource AttentionToActionBrush}" HorizontalAlignment="Right" Command="{Binding GoForwardCommand}" />
 							</Grid>
-						</DataTemplate>
-					</ListView.ItemTemplate>
-				</ListView>
-			</TabItem>
-			<TabItem Header="Selected Game">
-				<GroupBox Margin="10">
-					<GroupBox.Header>
-						<Grid>
-							<Button Content="Previous" Width="128" Background="{DynamicResource AttentionToActionBrush}" HorizontalAlignment="Left" Command="{Binding GoBackCommand}" />
-							<TextBlock Style="{StaticResource MaterialDesignHeadline5TextBlock}" HorizontalAlignment="Center" Foreground="Black">
-								<TextBlock.Text>
-									<MultiBinding StringFormat="{}{0} vs {1}">
-										<Binding ElementName="_thisView" Path="DataContext.SelectedGame.homeTeamName" />
-										<Binding ElementName="_thisView" Path="DataContext.SelectedGame.visTeamName" />
-									</MultiBinding>
-								</TextBlock.Text>
-							</TextBlock>
-							<Button Content="Next" Width="128" Background="{DynamicResource AttentionToActionBrush}" HorizontalAlignment="Right" Command="{Binding GoForwardCommand}" />
-						</Grid>
-					</GroupBox.Header>
-					<ScrollViewer HorizontalScrollBarVisibility="Auto">
+						</GroupBox.Header>
+						<ScrollViewer HorizontalScrollBarVisibility="Auto">
 
-						<StackPanel Orientation="Horizontal">
-							<StackPanel MinWidth="200">
-								<TextBlock Text="Game Date:" />
-								<TextBlock Text="Home Team: " />
-								<TextBlock Text="Score:" />
-								<TextBlock Text="StatID Code:" />
-								<TextBlock Text="GameID Code:" />
-								<TextBlock Text="Team Code:" />
-								<TextBlock Text="Rush Yards:" />
-								<TextBlock Text="Rush Attrition:" />
-								<TextBlock Text="Pass Yards:" />
-								<TextBlock Text="Pass Attrition:" />
-								<TextBlock Text="Pass Comp:" />
-								<TextBlock Text="Penalties:" />
-								<TextBlock Text="Penalty Yards:" />
-								<TextBlock Text="Fumbles Lost:" />
-								<TextBlock Text="Interceptions Thrown:" />
-								<TextBlock Text="First Downs:" />
-								<TextBlock Text="Third Down Attrition:" />
-								<TextBlock Text="Third Down Conversions:" />
-								<TextBlock Text="Fourth Down Attrition:" />
-								<TextBlock Text="Fourth Down Conversions:" />
-								<TextBlock Text="Time Possessed:" />
+							<StackPanel Orientation="Horizontal">
+								<StackPanel MinWidth="200">
+									<TextBlock Text="Game Date:" />
+									<TextBlock Text="Home Team: " />
+									<TextBlock Text="Score:" />
+									<TextBlock Text="StatID Code:" />
+									<TextBlock Text="GameID Code:" />
+									<TextBlock Text="Team Code:" />
+									<TextBlock Text="Rush Yards:" />
+									<TextBlock Text="Rush Attrition:" />
+									<TextBlock Text="Pass Yards:" />
+									<TextBlock Text="Pass Attrition:" />
+									<TextBlock Text="Pass Comp:" />
+									<TextBlock Text="Penalties:" />
+									<TextBlock Text="Penalty Yards:" />
+									<TextBlock Text="Fumbles Lost:" />
+									<TextBlock Text="Interceptions Thrown:" />
+									<TextBlock Text="First Downs:" />
+									<TextBlock Text="Third Down Attrition:" />
+									<TextBlock Text="Third Down Conversions:" />
+									<TextBlock Text="Fourth Down Attrition:" />
+									<TextBlock Text="Fourth Down Conversions:" />
+									<TextBlock Text="Time Possessed:" />
+								</StackPanel>
+								<StackPanel MinWidth="200">
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.gameDate}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeTeamName}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.score}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.statIdCode}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.gameCode}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.teamCode}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.rushYds}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.rushAtt}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.passYds}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.passAtt}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.passComp}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.penalties}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.penaltYds}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.fumblesLost}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.interceptionsThrown}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.firstDowns}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.thridDownAtt}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.thirdDownConver}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.fourthDownAtt}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.fourthDownConver}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.timePoss}" />
+								</StackPanel>
+								<StackPanel MinWidth="200">
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.gameDate}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visTeamName}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.score}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.statIdCode}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.gameCode}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.teamCode}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.rushYds}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.rushAtt}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.passYds}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.passAtt}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.passComp}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.penalties}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.penaltYds}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.fumblesLost}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.interceptionsThrown}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.firstDowns}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.thridDownAtt}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.thirdDownConver}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.fourthDownAtt}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.fourthDownConver}" />
+									<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.timePoss}" />
+								</StackPanel>
 							</StackPanel>
-							<StackPanel MinWidth="200">
-								<TextBlock Text="{Binding SelectedGame.homeStats.gameDate}" />
-								<TextBlock Text="{Binding SelectedGame.homeTeamName}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.score}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.statIdCode}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.gameCode}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.teamCode}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.rushYds}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.rushAtt}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.passYds}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.passAtt}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.passComp}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.penalties}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.penaltYds}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.fumblesLost}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.interceptionsThrown}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.firstDowns}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.thridDownAtt}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.thirdDownConver}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.fourthDownAtt}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.fourthDownConver}" />
-								<TextBlock Text="{Binding SelectedGame.homeStats.timePoss}" />
-							</StackPanel>
-							<StackPanel MinWidth="200">
-								<TextBlock Text="{Binding SelectedGame.visStats.gameDate}" />
-								<TextBlock Text="{Binding SelectedGame.visTeamName}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.score}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.statIdCode}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.gameCode}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.teamCode}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.rushYds}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.rushAtt}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.passYds}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.passAtt}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.passComp}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.penalties}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.penaltYds}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.fumblesLost}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.interceptionsThrown}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.firstDowns}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.thridDownAtt}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.thirdDownConver}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.fourthDownAtt}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.fourthDownConver}" />
-								<TextBlock Text="{Binding SelectedGame.visStats.timePoss}" />
-							</StackPanel>
-						</StackPanel>
-					</ScrollViewer>
-				</GroupBox>
-			</TabItem>
-		</TabControl>
-		<materialDesign:Snackbar Grid.Row="1" MessageQueue="{Binding SnackBoxMessage}" IsActive="False" />
+						</ScrollViewer>
+					</GroupBox>
+				</TabItem>
+			</TabControl>
+			<materialDesign:Snackbar Grid.Row="1" MessageQueue="{Binding SnackBoxMessage}" IsActive="False" />
+		</Grid>
+		<Grid>
+			<dialog:AddGameDialog Visibility="{Binding IsAddGameDialogVisible, Mode=TwoWay}" DialogTitle="Add New Game" NewItem="{Binding NewGameInfo, Mode=TwoWay}" CompletedCommand="{Binding CreateGameCommand}" />
+		</Grid>
 	</Grid>
 </Window>
