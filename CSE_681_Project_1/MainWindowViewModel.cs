@@ -164,6 +164,8 @@ namespace CSE_681_Project_1.Main
 					FileManagement.IsFileLoaded = false;
 					DataManager.Instance.SelectedGame = new GameInfo();
 					FileManagement.OpenFile(DataManager.Instance.AllGames);
+					OnPropertyChanged(nameof(GameInfoHeader));
+					SelectedIndex = 0;
 				});
 
 			SaveCommand = new Command(() => FileManagement.SaveFile(DataManager.Instance.AllGames));

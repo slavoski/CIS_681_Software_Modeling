@@ -12,7 +12,6 @@ namespace CSE_681_Project_1.Converters
 			if (!string.IsNullOrEmpty(value?.ToString()))
 			{
 				result = DateTime.Parse(value.ToString());
-				//result = dateTime.ToString("MMM dd, yyyy");
 			}
 			return result;
 		}
