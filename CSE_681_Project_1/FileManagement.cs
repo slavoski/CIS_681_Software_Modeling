@@ -10,7 +10,7 @@ namespace CSE_681_Project_1
 		#region member variables
 
 		private string _fileName = "";
-		private bool _isFileLoaded;
+		private bool _isFileLoaded = true;
 		private bool _isFileParsed;
 		private string _mainFile = "Load File to Edit";
 		private string m_fullFilePath = "";

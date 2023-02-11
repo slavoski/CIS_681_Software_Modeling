@@ -144,6 +144,8 @@ namespace CSE_681_Project_1.Main
 
 		public async Task CreateGame()
 		{
+			FileManagement.IsFileLoaded = true;
+
 			DataManager.Instance.AllGames.Add(NewGameInfo);
 
 			NewGameInfo = new GameInfo();
