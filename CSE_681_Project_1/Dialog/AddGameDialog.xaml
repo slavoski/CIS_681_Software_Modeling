@@ -4,23 +4,26 @@
 				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				xmlns:converter="clr-namespace:CSE_681_Project_1.Converters"
 				x:Name="_thisView"
         mc:Ignorable="d">
+
+	<ContentControl.Resources>
+		<converter:GetDescriptionFromProperty x:Key="GetDescriptionFromProperty" />
+	</ContentControl.Resources>
+
 	<Grid DataContext="{x:Reference _thisView}">
 		<Grid.InputBindings>
 			<MouseBinding Gesture="LeftClick" Command="{Binding CancelCommand, Mode=OneTime}" />
 		</Grid.InputBindings>
 		<Border Background="#90000000" Visibility="{Binding Visibility}">
-			<Border BorderBrush="#616161" BorderThickness="1"
+			<Border Margin="25" BorderBrush="#616161" BorderThickness="1"
                     Background="#212121"  CornerRadius="10,10,10,10"
-                    VerticalAlignment="Center" HorizontalAlignment="Center" Width="550">
+                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="550">
 				<Border.BitmapEffect>
 					<DropShadowBitmapEffect Color="Black" Opacity=".5" Direction="270" ShadowDepth="0.7" />
 				</Border.BitmapEffect>
-				<Grid MinHeight="300"  DataContext="{x:Reference _thisView}">
-					<Grid.InputBindings>
-						<MouseBinding Gesture="LeftClick" Command="{Binding DoNothingCommand, Mode=OneTime}" />
-					</Grid.InputBindings>
+				<Grid >
 					<Grid.RowDefinitions>
 						<RowDefinition />
 						<RowDefinition Height="Auto" />
@@ -28,63 +31,106 @@
 					<Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="*" />
+							<RowDefinition />
 						</Grid.RowDefinitions>
 
-						<Label Content="{Binding DialogTitle}"  Style="{DynamicResource MaterialDesignLabel}" />
+						<TextBlock Margin="0,0,0,15" Text="{Binding DialogTitle}"  Style="{DynamicResource MaterialDesignHeadline4TextBlock}" HorizontalAlignment="Center" />
 
-						<Grid Grid.Row="1">
+						<Grid Grid.Row="1" >
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="*" />
+								<ColumnDefinition />
+								<ColumnDefinition />
 							</Grid.ColumnDefinitions>
-							<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Home Team">
-								<TextBox.Text>
-									<Binding Path="NewItem.homeTeamName" UpdateSourceTrigger="PropertyChanged" ElementName="_thisView">
-									</Binding>
-								</TextBox.Text>
-							</TextBox>
-							<TextBox Grid.Column="2" Margin="10,0,15,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Visiting Team">
-								<TextBox.Text>
-									<Binding Path="NewItem.visTeamName" UpdateSourceTrigger="PropertyChanged" ElementName="_thisView">
-									</Binding>
-								</TextBox.Text>
-							</TextBox>
 
-							<StackPanel>
-								<StackPanel MinWidth="200">
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Game Date" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Score" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Stat ID Code" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Game Code" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Team Code" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Rush Yards" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Rush Attempts" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Pass Yards" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Pass Attempts" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Pass Completion" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Penalties" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Penalty Yards" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Fumbles Lost" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Interceptions Lost" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="" />
-									<TextBox Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="" />
-								</StackPanel>
-							</StackPanel>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition  />
+							</Grid.RowDefinitions>
+
+							<TextBox Grid.ColumnSpan="2" HorizontalAlignment="Center" Text="{Binding NewItem.date}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.date, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=date}" />
+							<TextBox Grid.Row="1" Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeTeamName, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=homeTeamName}" />
+							<TextBox Grid.Row="1" Grid.Column="1" Margin="15,0,15,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visTeamName, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=visTeamName}" />
+
+							<ScrollViewer Grid.Row="2" Margin="15,0,15,15" Grid.ColumnSpan="2">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+
+									<Grid.RowDefinitions>
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+									</Grid.RowDefinitions>
+
+									<TextBox Grid.Row="0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.gameDate, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=gameDate}" />
+									<TextBox Grid.Row="1" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.score, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=score}" />
+									<TextBox Grid.Row="2" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.statIdCode, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=statIdCode}" />
+									<TextBox Grid.Row="3" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.gameCode, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=gameCode}" />
+									<TextBox Grid.Row="4" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.teamCode, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=teamCode}" />
+									<TextBox Grid.Row="5" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.rushYds, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=rushYds}" />
+									<TextBox Grid.Row="6" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.rushAtt, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=rushAtt}" />
+									<TextBox Grid.Row="7" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.passYds, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=passYds}" />
+									<TextBox Grid.Row="8" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.passAtt, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=passAtt}" />
+									<TextBox Grid.Row="9" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.passComp, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=passComp}" />
+									<TextBox Grid.Row="10" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.penalties, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=penalties}" />
+									<TextBox Grid.Row="11" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.penaltYds, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=penaltYds}" />
+									<TextBox Grid.Row="12" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.fumblesLost, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=fumblesLost}" />
+									<TextBox Grid.Row="13" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.interceptionsThrown, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=interceptionsThrown}" />
+									<TextBox Grid.Row="14" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.firstDowns, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=firstDowns}" />
+									<TextBox Grid.Row="15" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.thridDownAtt, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=thridDownAtt}" />
+									<TextBox Grid.Row="16" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.thirdDownConver, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=thirdDownConver}" />
+									<TextBox Grid.Row="17" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.fourthDownAtt, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=fourthDownAtt}" />
+									<TextBox Grid.Row="18" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.fourthDownConver, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=fourthDownConver}" />
+									<TextBox Grid.Row="19" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.homeStats.timePoss, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=timePoss}" />
+
+									<TextBox Grid.Column="1" Grid.Row="0"  Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.gameDate, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=gameDate}" />
+									<TextBox Grid.Column="1" Grid.Row="1"  Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.score, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=score}" />
+									<TextBox Grid.Column="1" Grid.Row="2"  Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.statIdCode, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=statIdCode}" />
+									<TextBox Grid.Column="1" Grid.Row="3"  Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.gameCode, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=gameCode}" />
+									<TextBox Grid.Column="1" Grid.Row="4"  Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.teamCode, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=teamCode}" />
+									<TextBox Grid.Column="1" Grid.Row="5"  Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.rushYds, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=rushYds}" />
+									<TextBox Grid.Column="1" Grid.Row="6"  Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.rushAtt, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=rushAtt}" />
+									<TextBox Grid.Column="1" Grid.Row="7"  Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.passYds, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=passYds}" />
+									<TextBox Grid.Column="1" Grid.Row="8"  Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.passAtt, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=passAtt}" />
+									<TextBox Grid.Column="1" Grid.Row="9"  Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.passComp, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=passComp}" />
+									<TextBox Grid.Column="1" Grid.Row="10" Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.penalties, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=penalties}" />
+									<TextBox Grid.Column="1" Grid.Row="11" Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.penaltYds, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=penaltYds}" />
+									<TextBox Grid.Column="1" Grid.Row="12" Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.fumblesLost, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=fumblesLost}" />
+									<TextBox Grid.Column="1" Grid.Row="13" Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.interceptionsThrown, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=interceptionsThrown}" />
+									<TextBox Grid.Column="1" Grid.Row="14" Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.firstDowns, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=firstDowns}" />
+									<TextBox Grid.Column="1" Grid.Row="15" Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.thridDownAtt, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=thridDownAtt}" />
+									<TextBox Grid.Column="1" Grid.Row="16" Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.thirdDownConver, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=thirdDownConver}" />
+									<TextBox Grid.Column="1" Grid.Row="17" Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.fourthDownAtt, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=fourthDownAtt}" />
+									<TextBox Grid.Column="1" Grid.Row="18" Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.fourthDownConver, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=fourthDownConver}" />
+									<TextBox Grid.Column="1" Grid.Row="19" Margin="15,0,0,0" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="{Binding NewItem.visStats.timePoss, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=timePoss}" />
+								</Grid>
+							</ScrollViewer>
 						</Grid>
+
+						<Grid.InputBindings>
+							<MouseBinding Gesture="LeftClick" Command="{Binding DoNothingCommand, Mode=OneTime}" />
+						</Grid.InputBindings>
+
 					</Grid>
 					<Grid Grid.Row="1" DataContext="{x:Reference _thisView}">
 						<Grid.ColumnDefinitions>
