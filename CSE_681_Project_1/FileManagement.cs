@@ -108,7 +108,7 @@ namespace CSE_681_Project_1
 			using (StreamReader streamReader = new StreamReader(m_fullFilePath))
 			{
 				MainFile = streamReader.ReadToEnd();
-				
+
 				allGames.ReplaceRange(JsonConvert.DeserializeObject<ObservableRangeCollection<GameInfo>>(MainFile).Select(g => new GameInfoViewModel(g)));
 
 				IsFileLoaded = true;
@@ -118,7 +118,9 @@ namespace CSE_681_Project_1
 
 		public void SaveFile(ObservableRangeCollection<GameInfoViewModel> allGames)
 		{
-			File.WriteAllText(m_fullFilePath, MainFile);
+			var text = JsonConvert.SerializeObject(allGames.Select(p => p.JSONDeserialize));
+
+			File.WriteAllText(m_fullFilePath, text);
 		}
 
 		#endregion methods

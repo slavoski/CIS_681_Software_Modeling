@@ -20,6 +20,7 @@ namespace CSE_681_Project_1
 		public TeamInfoViewModel HomeTeamStats => _homeTeamStats;
 		public string HomeVsTeam => HomeTeamName + " vs " + VisitorTeamName;
 		public bool IsFinal => _gameInfo.isFinal;
+		public GameInfo JSONDeserialize => _gameInfo;
 		public bool Neutral => _gameInfo.neutral;
 		public string VisitorTeamName => _gameInfo.visTeamName;
 		public TeamInfoViewModel VisTeamStats => _visTeamStats;
