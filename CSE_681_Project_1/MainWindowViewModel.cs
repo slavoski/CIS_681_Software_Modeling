@@ -12,7 +12,7 @@ namespace CSE_681_Project_1.Main
 
 		private Visibility _isAddGameDialogVisible = Visibility.Hidden;
 		private Visibility _isEditGameDialogVisible = Visibility.Hidden;
-		private GameInfo _newGameInfo = new GameInfo();
+		private GameInfo _newGameInfo = new();
 		private int _selectedIndex;
 
 		#endregion member variables
@@ -146,9 +146,9 @@ namespace CSE_681_Project_1.Main
 		{
 			FileManagement.IsFileLoaded = true;
 
-			DataManager.Instance.AllGames.Add(NewGameInfo);
+			DataManager.Instance.AllGames.Add(new GameInfoViewModel(NewGameInfo));
 
-			NewGameInfo = new GameInfo();
+			NewGameInfo = new();
 
 			IsAddGameDialogVisible = Visibility.Hidden;
 
@@ -162,7 +162,7 @@ namespace CSE_681_Project_1.Main
 			OpenCommand = new Command(() =>
 				{
 					FileManagement.IsFileLoaded = false;
-					DataManager.Instance.SelectedGame = new GameInfo();
+					DataManager.Instance.SelectedGame = new(new());
 					FileManagement.OpenFile(DataManager.Instance.AllGames);
 					OnPropertyChanged(nameof(GameInfoHeader));
 					SelectedIndex = 0;

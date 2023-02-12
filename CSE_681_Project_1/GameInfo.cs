@@ -13,8 +13,6 @@ namespace CSE_681_Project_1
 		[Description("Home Team")]
 		public string homeTeamName { get; set; } = "";
 
-		public string HomeVsTeam => homeTeamName + " vs " + visTeamName;
-
 		[Description("Is Final")]
 		public bool isFinal { get; set; } = false;
 

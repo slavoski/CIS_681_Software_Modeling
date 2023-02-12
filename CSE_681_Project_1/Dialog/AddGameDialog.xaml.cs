@@ -22,6 +22,12 @@ namespace CSE_681_Project_1.Dialog
 			private set;
 		}
 
+		public Command ClearCommand
+		{
+			get;
+			private set;
+		}
+
 		public Command CreateCommand
 		{
 			get;
@@ -36,6 +42,13 @@ namespace CSE_681_Project_1.Dialog
 
 		#endregion commands
 
+		#region member variables
+
+		private TimeSpan _homePossession;
+		private TimeSpan _visPossession;
+
+		#endregion member variables
+
 		#region constructor / destructor
 
 		public AddGameDialog()
@@ -44,6 +57,7 @@ namespace CSE_681_Project_1.Dialog
 			CancelCommand = new Command(() => Cancel());
 			CreateCommand = new Command(() => CreateItem());
 			DoNothingCommand = new Command(() => DoNothing());
+			ClearCommand = new Command(() => Clear());
 		}
 
 		private void DoNothing()
@@ -67,6 +81,15 @@ namespace CSE_681_Project_1.Dialog
 			set => SetValue(DialogTitleProperty, value);
 		}
 
+		public TimeSpan HomePossession
+		{
+			get => _homePossession;
+			set
+			{
+				_homePossession = value;
+			}
+		}
+
 		public bool IsBusiness
 		{
 			get => (bool)GetValue(IsBusinessProperty);
@@ -79,11 +102,29 @@ namespace CSE_681_Project_1.Dialog
 			set => SetValue(NewItemProperty, value);
 		}
 
+		public TimeSpan VisPossesion
+		{
+			get => _visPossession;
+			set
+			{
+				_visPossession = value;
+			}
+		}
+
 		#endregion properties
 
 		#region methods
 
+		public void CalculateTime(bool isHome)
+		{
+		}
+
 		public void Cancel() => Visibility = Visibility.Hidden;
+
+		public void Clear()
+		{
+			NewItem = new GameInfo();
+		}
 
 		public void CreateItem()
 		{

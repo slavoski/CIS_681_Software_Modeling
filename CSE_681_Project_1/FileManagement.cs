@@ -2,6 +2,7 @@
 using MvvmHelpers;
 using Newtonsoft.Json;
 using System.IO;
+using System.Linq;
 
 namespace CSE_681_Project_1
 {
@@ -81,7 +82,7 @@ namespace CSE_681_Project_1
 			}
 		}
 
-		public void OpenFile(ObservableRangeCollection<GameInfo> allGames)
+		public void OpenFile(ObservableRangeCollection<GameInfoViewModel> allGames)
 		{
 			var openFileDialog = new OpenFileDialog()
 			{
@@ -100,21 +101,22 @@ namespace CSE_681_Project_1
 			}
 		}
 
-		public void OpenFileWithPath(string _fullFilePathName, string _fileName, ObservableRangeCollection<GameInfo> allGames)
+		public void OpenFileWithPath(string _fullFilePathName, string _fileName, ObservableRangeCollection<GameInfoViewModel> allGames)
 		{
 			m_fullFilePath = _fullFilePathName;
 			FileName = _fileName;
 			using (StreamReader streamReader = new StreamReader(m_fullFilePath))
 			{
 				MainFile = streamReader.ReadToEnd();
-				allGames.ReplaceRange(JsonConvert.DeserializeObject<ObservableRangeCollection<GameInfo>>(MainFile));
+				
+				allGames.ReplaceRange(JsonConvert.DeserializeObject<ObservableRangeCollection<GameInfo>>(MainFile).Select(g => new GameInfoViewModel(g)));
 
 				IsFileLoaded = true;
 				IsFileParsed = false;
 			}
 		}
 
-		public void SaveFile(ObservableRangeCollection<GameInfo> allGames)
+		public void SaveFile(ObservableRangeCollection<GameInfoViewModel> allGames)
 		{
 			File.WriteAllText(m_fullFilePath, MainFile);
 		}

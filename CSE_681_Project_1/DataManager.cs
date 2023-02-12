@@ -8,7 +8,7 @@ namespace CSE_681_Project_1.Main
 		#region member variables
 
 		private static readonly Lazy<DataManager> _instance = new Lazy<DataManager>(() => new DataManager());
-		private GameInfo _selectedGame = new();
+		private GameInfoViewModel _selectedGame = new(new());
 
 		#endregion member variables
 
@@ -19,13 +19,13 @@ namespace CSE_681_Project_1.Main
 			get => _instance.Value;
 		}
 
-		public ModifyCollectionIndex<GameInfo> AllGames
+		public ModifyCollectionIndex<GameInfoViewModel> AllGames
 		{
 			get;
 			set;
-		} = new ModifyCollectionIndex<GameInfo>();
+		} = new ModifyCollectionIndex<GameInfoViewModel>();
 
-		public GameInfo SelectedGame
+		public GameInfoViewModel SelectedGame
 		{
 			get => _selectedGame;
 			set

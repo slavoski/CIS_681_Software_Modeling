@@ -20,6 +20,7 @@
 	</Window.DataContext>
 	<ContentControl.Resources>
 		<converter:GetDescriptionFromPropertyAddColon x:Key="GetDescriptionFromProperty" />
+		<converter:ConvertNumberToTime x:Key="ConvertNumberToTime" />
 	</ContentControl.Resources>
 	<Grid>
 		<Grid>
@@ -61,11 +62,11 @@
 										</Grid.RowDefinitions>
 										<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
 											<Label Content="Date: " />
-											<Label Content="{Binding date}" />
+											<Label Content="{Binding Date}" />
 										</StackPanel>
 										<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
 											<Label Content="Home Team: " />
-											<Label Content="{Binding homeTeamName}" />
+											<Label Content="{Binding HomeTeamName}" />
 										</StackPanel>
 										<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
 											<Label Content="VS " />
@@ -73,16 +74,16 @@
 
 										<StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
 											<Label Content="Away Team:" />
-											<Label Content="{Binding visTeamName}" />
+											<Label Content="{Binding VisitorTeamName}" />
 										</StackPanel>
 
 										<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
 											<Label Content="Final: " />
-											<Label Content="{Binding isFinal}" />
+											<Label Content="{Binding IsFinal}" />
 										</StackPanel>
 										<StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left">
 											<Label Content="Neutral: " />
-											<Label Content="{Binding neutral}" />
+											<Label Content="{Binding Neutral}" />
 										</StackPanel>
 									</Grid>
 								</DataTemplate>
@@ -104,7 +105,7 @@
 								<Button Content="Next" Width="128" Background="{DynamicResource AttentionToActionBrush}" HorizontalAlignment="Right" Command="{Binding GoForwardCommand}" />
 							</Grid>
 						</GroupBox.Header>
-						<ScrollViewer >
+						<ScrollViewer>
 
 							<Grid>
 								<Grid.RowDefinitions>
@@ -120,86 +121,97 @@
 									<ColumnDefinition />
 								</Grid.ColumnDefinitions>
 
-								
-								<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeTeamName, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=homeTeamName}" />
-								<TextBlock Grid.Column="1" Margin="10,0,0,0" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeTeamName}" />
-								<TextBlock Grid.Column="2"  Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visTeamName, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=visTeamName}" />
-								<TextBlock Grid.Column="3" Margin="10,0,0,0" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visTeamName}" />
+								<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamName, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=homeTeamName}" />
+								<TextBlock Grid.Column="1" Margin="10,0,0,0" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamName}" />
+								<TextBlock Grid.Column="2"  Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisitorTeamName, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=visTeamName}" />
+								<TextBlock Grid.Column="3" Margin="10,0,0,0" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisitorTeamName}" />
 
-								<TextBlock Grid.Row="1" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.isFinal, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=isFinal}" />
-								<TextBlock Grid.Row="1" Grid.Column="1" Margin="10,0,0,0" HorizontalAlignment="Left" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.isFinal}" />
-								<TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.neutral, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=neutral}" />
-								<TextBlock Grid.Row="1" Grid.Column="3" Margin="10,0,0,0" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.neutral}" />
+								<TextBlock Grid.Row="1" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.IsFinal, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=isFinal}" />
+								<TextBlock Grid.Row="1" Grid.Column="1" Margin="10,0,0,0" HorizontalAlignment="Left" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.IsFinal}" />
+								<TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.Neutral, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=neutral}" />
+								<TextBlock Grid.Row="1" Grid.Column="3" Margin="10,0,0,0" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.Neutral}" />
 
-
-								<Separator Grid.Row="2" Grid.ColumnSpan="4" Style="{DynamicResource MaterialDesignSeparator}" Margin="15"/>
+								<Separator Grid.Row="2" Grid.ColumnSpan="4" Style="{DynamicResource MaterialDesignSeparator}" Margin="15" />
 
 								<StackPanel Grid.Row="3" Grid.ColumnSpan="4" Orientation="Horizontal">
 									<StackPanel MinWidth="200">
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.gameDate, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=gameDate}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.score, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=score}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.statIdCode, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=statIdCode}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.gameCode, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=gameCode}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.teamCode, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=teamCode}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.rushYds, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=rushYds}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.rushAtt, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=rushAtt}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.passYds, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=passYds}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.passAtt, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=passAtt}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.passComp, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=passComp}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.penalties, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=penalties}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.penaltYds, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=penaltYds}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.fumblesLost, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=fumblesLost}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.interceptionsThrown, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=interceptionsThrown}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.firstDowns, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=firstDowns}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.thridDownAtt, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=thridDownAtt}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.thirdDownConver, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=thirdDownConver}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.fourthDownAtt, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=fourthDownAtt}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.fourthDownConver, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=fourthDownConver}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.timePoss, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=timePoss}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.GameDate, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=gameDate}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.Score, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=score}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.StatIDCode, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=statIdCode}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.GameCode, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=gameCode}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.TeamCode, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=teamCode}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.RushYards, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=rushYds}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.RushAttempts, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=rushAtt}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.PassYards, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=passYds}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.PassAttempts, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=passAtt}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.PassesCompleted, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=passComp}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.Penalties, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=penalties}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.PenaltyYards, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=penaltYds}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.FumblesLost, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=fumblesLost}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.InterceptionsThrown, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=interceptionsThrown}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.FirstDowns, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=firstDowns}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.ThirdDownAttempts, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=thridDownAtt}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.ThirdDownConversions, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=thirdDownConver}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.FourthDownAttempts, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=fourthDownAtt}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.FourthDownConversions, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=fourthDownConver}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.TimePossed, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=timePoss}" />
 									</StackPanel>
 									<StackPanel MinWidth="200">
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.gameDate}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.score}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.statIdCode}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.gameCode}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.teamCode}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.rushYds}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.rushAtt}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.passYds}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.passAtt}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.passComp}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.penalties}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.penaltYds}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.fumblesLost}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.interceptionsThrown}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.firstDowns}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.thridDownAtt}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.thirdDownConver}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.fourthDownAtt}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.fourthDownConver}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.homeStats.timePoss}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.GameDate}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.Score}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.StatIDCode}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.GameCode}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.TeamCode}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.RushYards}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.RushAttempts}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.PassYards}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.PassAttempts}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.PassesCompleted}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.Penalties}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.PenaltyYards}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.FumblesLost}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.InterceptionsThrown}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.FirstDowns}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.ThirdDownAttempts}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.ThirdDownConversions}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.FourthDownAttempts}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.FourthDownConversions}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.TimePossed}" />
+										
+										<StackPanel Orientation="Horizontal">
+											<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.TimePossed, Converter={StaticResource ConvertNumberToTime}, ConverterParameter=1}" />
+											<TextBlock Text=" Minutes " />
+											<TextBlock Grid.Column="1" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.TimePossed, Converter={StaticResource ConvertNumberToTime}, ConverterParameter=2}" />
+											<TextBlock Text=" Seconds" />
+										</StackPanel>
 									</StackPanel>
 									<StackPanel MinWidth="200">
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.gameDate}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.score}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.statIdCode}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.gameCode}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.teamCode}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.rushYds}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.rushAtt}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.passYds}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.passAtt}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.passComp}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.penalties}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.penaltYds}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.fumblesLost}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.interceptionsThrown}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.firstDowns}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.thridDownAtt}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.thirdDownConver}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.fourthDownAtt}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.fourthDownConver}" />
-										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.visStats.timePoss}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.GameDate}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.Score}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.StatIDCode}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.GameCode}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.TeamCode}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.RushYards}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.RushAttempts}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.PassYards}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.PassAttempts}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.PassesCompleted}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.Penalties}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.PenaltyYards}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.FumblesLost}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.InterceptionsThrown}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.FirstDowns}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.ThirdDownAttempts}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.ThirdDownConversions}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.FourthDownAttempts}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.FourthDownConversions}" />
+										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.TimePossed}" />
+										<StackPanel Orientation="Horizontal">
+											<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.TimePossed, Converter={StaticResource ConvertNumberToTime}, ConverterParameter=1}" />
+											<TextBlock Text=" Minutes " />
+											<TextBlock Grid.Column="1" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisTeamStats.TimePossed, Converter={StaticResource ConvertNumberToTime}, ConverterParameter=2}" />
+											<TextBlock Text=" Seconds" />
+										</StackPanel>
 									</StackPanel>
 								</StackPanel>
 							</Grid>
