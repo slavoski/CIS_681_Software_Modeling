@@ -1,6 +1,5 @@
 ﻿using Microsoft.Win32;
 using MvvmHelpers;
-using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
 
@@ -13,7 +12,7 @@ namespace CSE_681_Project_1
 		private string _fileName = "";
 		private bool _isFileLoaded = true;
 		private bool _isFileParsed;
-		private string _mainFile = "Load File to Edit";
+		private string _mainFile = "";
 		private string m_fullFilePath = "";
 
 		#endregion member variables
@@ -64,12 +63,13 @@ namespace CSE_681_Project_1
 
 		#region methods
 
-		public void CreateNewFile()
+		public string CreateNewFile(string dataToWrite)
 		{
+			var result = "File Was Not Saved";
 			SaveFileDialog sfd = new SaveFileDialog()
 			{
 				DefaultExt = ".json",
-				FileName = "JSON",
+				FileName = "",
 				Filter = "JSON (.json)|*.json",
 				OverwritePrompt = true,
 				Title = "Save JSON File"
@@ -77,13 +77,19 @@ namespace CSE_681_Project_1
 
 			if (sfd.ShowDialog() == true)
 			{
-				//File.WriteAllText(sfd.FileName, "");
-				//OpenFileWithPath(sfd.FileName, sfd.SafeFileName);
+				m_fullFilePath = sfd.FileName;
+				result = SaveFile(dataToWrite);
+				result += "\n";
+				result += OpenFileWithPath(sfd.FileName, sfd.SafeFileName);
+				MainFile = "";
 			}
+
+			return result;
 		}
 
-		public void OpenFile(ObservableRangeCollection<GameInfoViewModel> allGames)
+		public string OpenFile()
 		{
+			var result = string.Empty;
 			var openFileDialog = new OpenFileDialog()
 			{
 				DefaultExt = ".json",
@@ -93,34 +99,50 @@ namespace CSE_681_Project_1
 
 			if (openFileDialog.ShowDialog() == true)
 			{
-				OpenFileWithPath(openFileDialog.FileName, openFileDialog.SafeFileName, allGames);
+				result = OpenFileWithPath(openFileDialog.FileName, openFileDialog.SafeFileName);
 			}
 			else
 			{
+				result += "File Not Loaded";
 				IsFileLoaded = true;
 			}
+
+			return result;
 		}
 
-		public void OpenFileWithPath(string _fullFilePathName, string _fileName, ObservableRangeCollection<GameInfoViewModel> allGames)
+		public string OpenFileWithPath(string _fullFilePathName, string _fileName)
 		{
 			m_fullFilePath = _fullFilePathName;
 			FileName = _fileName;
+			var result = string.Empty;
 			using (StreamReader streamReader = new StreamReader(m_fullFilePath))
 			{
 				MainFile = streamReader.ReadToEnd();
 
-				allGames.ReplaceRange(JsonConvert.DeserializeObject<ObservableRangeCollection<GameInfo>>(MainFile).Select(g => new GameInfoViewModel(g)));
+				if (!MainFile.Any())
+				{
+					result = "File Was Empty";
+				}
 
 				IsFileLoaded = true;
 				IsFileParsed = false;
 			}
+
+			return result;
 		}
 
-		public void SaveFile(ObservableRangeCollection<GameInfoViewModel> allGames)
+		public string SaveFile(string dataToSave)
 		{
-			var text = JsonConvert.SerializeObject(allGames.Select(p => p.JSONDeserialize));
-
-			File.WriteAllText(m_fullFilePath, text);
+			var result = "Data Saved Succesfully!";
+			if (!string.IsNullOrEmpty(dataToSave))
+			{
+				File.WriteAllText(m_fullFilePath, dataToSave);
+			}
+			else
+			{
+				result = "The Data to Save cannot be empty";
+			}
+			return result;
 		}
 
 		#endregion methods

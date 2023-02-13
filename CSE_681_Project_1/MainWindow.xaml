@@ -29,17 +29,19 @@
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="2*" />
 			</Grid.ColumnDefinitions>
 
 			<ToolBar Grid.Row="0" Grid.ColumnSpan="2">
 				<Button ToolTip="New File" Content="{materialDesign:PackIcon Kind=FileDocumentPlus}" Command="{Binding CreateNewFileCommand}" />
 				<Button ToolTip="Open File" Content="{materialDesign:PackIcon Kind=FolderOpen}" Command="{Binding OpenCommand}" />
-				<Button ToolTip="Save File" Content="{materialDesign:PackIcon Kind=ContentSave}" Command="{Binding SaveCommand}" IsEnabled="{Binding FileManagement.IsFileLoaded}" />
+				<Button ToolTip="Save File" Content="{materialDesign:PackIcon Kind=ContentSave}" Command="{Binding SaveCommand}" />
 			</ToolBar>
 			<GroupBox Grid.Row="1" Margin="10" Header="{Binding FileManagement.FileName}" materialDesign:ColorZoneAssist.Mode="SecondaryMid">
-				<TextBox Grid.Row="1" Text="{Binding FileManagement.MainFile, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" IsEnabled="{Binding FileManagement.IsFileLoaded}" />
+				<ScrollViewer HorizontalScrollBarVisibility="Auto">
+					<TextBlock MinWidth="50" MaxWidth="500" Grid.Row="1" Text="{Binding FileManagement.MainFile, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" />
+				</ScrollViewer>
 			</GroupBox>
 
 			<TabControl Grid.Row="1" Grid.Column="2" Style="{StaticResource MaterialDesignFilledTabControl}" SelectedIndex="{Binding SelectedIndex}">
@@ -177,7 +179,7 @@
 										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.FourthDownAttempts}" />
 										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.FourthDownConversions}" />
 										<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.TimePossed}" />
-										
+
 										<StackPanel Orientation="Horizontal">
 											<TextBlock Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamStats.TimePossed, Converter={StaticResource ConvertNumberToTime}, ConverterParameter=1}" />
 											<TextBlock Text=" Minutes " />
@@ -219,10 +221,22 @@
 					</GroupBox>
 				</TabItem>
 			</TabControl>
-			<materialDesign:Snackbar Grid.Row="1" MessageQueue="{Binding SnackBoxMessage}" IsActive="False" />
 		</Grid>
 		<Grid>
 			<dialog:AddGameDialog Visibility="{Binding IsAddGameDialogVisible, Mode=TwoWay}" DialogTitle="Add New Game" NewItem="{Binding NewGameInfo, Mode=TwoWay}" CompletedCommand="{Binding CreateGameCommand}" />
 		</Grid>
+		<materialDesign:Snackbar Grid.Row="1" MessageQueue="{Binding Source={x:Static vm:SnackBarManager.SnackBoxMessage}}" IsActive="False" />
+		<materialDesign:DialogHost IsOpen="{Binding IsDialogSaveFileVisible}" Identifier="SaveFile" CloseOnClickAway="True">
+			<materialDesign:DialogHost.DialogContent>
+				<StackPanel>
+
+					<TextBlock Text="Save Over Current File" />
+
+					<Button Command="{Binding SaveFileDialogCommand}">Ok</Button>
+					<Button Grid.Column="2" Command="materialDesign:DialogHost.CloseDialogCommand" >Cancel</Button>
+				</StackPanel>
+			</materialDesign:DialogHost.DialogContent>
+			<!-- put the content over which the dialog is shown here (e.g. your main window grid)-->
+		</materialDesign:DialogHost>
 	</Grid>
 </Window>

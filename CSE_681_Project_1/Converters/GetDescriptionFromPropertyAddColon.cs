@@ -11,7 +11,7 @@ namespace CSE_681_Project_1.Converters
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (value == null)
+			if (value == null && parameter != null)
 				return Binding.DoNothing;
 
 			string propertyName = (parameter as string).Split('.').Last();

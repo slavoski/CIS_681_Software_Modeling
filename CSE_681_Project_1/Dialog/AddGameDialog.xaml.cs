@@ -1,4 +1,5 @@
-﻿using MvvmHelpers.Commands;
+﻿using CSE_681_Project_1.Main;
+using MvvmHelpers.Commands;
 using System;
 using System.Windows;
 
@@ -114,10 +115,6 @@ namespace CSE_681_Project_1.Dialog
 		#endregion properties
 
 		#region methods
-
-		public void CalculateTime(bool isHome)
-		{
-		}
 
 		public void Cancel() => Visibility = Visibility.Hidden;
 

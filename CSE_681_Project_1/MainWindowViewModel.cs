@@ -11,6 +11,7 @@ namespace CSE_681_Project_1.Main
 		#region member variables
 
 		private Visibility _isAddGameDialogVisible = Visibility.Hidden;
+		private bool _isDialogSaveFileVisible;
 		private Visibility _isEditGameDialogVisible = Visibility.Hidden;
 		private GameInfo _newGameInfo = new();
 		private int _selectedIndex;
@@ -107,6 +108,16 @@ namespace CSE_681_Project_1.Main
 			private set;
 		}
 
+		public bool IsDialogSaveFileVisible
+		{
+			get => _isDialogSaveFileVisible;
+			set
+			{
+				_isDialogSaveFileVisible = value;
+				OnPropertyChanged(nameof(IsDialogSaveFileVisible));
+			}
+		}
+
 		public Command OpenCommand
 		{
 			get;
@@ -114,6 +125,12 @@ namespace CSE_681_Project_1.Main
 		}
 
 		public Command SaveCommand
+		{
+			get;
+			private set;
+		}
+
+		public Command SaveFileDialogCommand
 		{
 			get;
 			private set;
@@ -152,7 +169,14 @@ namespace CSE_681_Project_1.Main
 
 			IsAddGameDialogVisible = Visibility.Hidden;
 
+			FileManagement.MainFile = DataManager.Instance.SaveData;
+
 			await Task.CompletedTask;
+		}
+
+		public void SaveFileDialog()
+		{
+			SnackBarManager.SnackBoxMessage.Enqueue(FileManagement.SaveFile(DataManager.Instance.SaveData));
 		}
 
 		private void InitializeCommands()
@@ -163,13 +187,37 @@ namespace CSE_681_Project_1.Main
 				{
 					FileManagement.IsFileLoaded = false;
 					DataManager.Instance.SelectedGame = new(new());
-					FileManagement.OpenFile(DataManager.Instance.AllGames);
+					var result = FileManagement.OpenFile();
+
+					if (!(string.Empty == result))
+					{
+						SnackBarManager.SnackBoxMessage.Enqueue(result);
+					}
+					else
+					{
+						DataManager.Instance.ParseData(FileManagement.MainFile);
+						SnackBarManager.SnackBoxMessage.Enqueue("File Loaded Succesfully");
+					}
+
 					OnPropertyChanged(nameof(GameInfoHeader));
 					SelectedIndex = 0;
 				});
 
-			SaveCommand = new Command(() => FileManagement.SaveFile(DataManager.Instance.AllGames));
-			CreateNewFileCommand = new Command(() => FileManagement.CreateNewFile());
+			SaveCommand = new Command(() =>
+				{
+					IsDialogSaveFileVisible = true;
+				});
+			CreateNewFileCommand = new Command(() =>
+			{
+				SnackBarManager.SnackBoxMessage.Enqueue(FileManagement.CreateNewFile(DataManager.Instance.SaveData));
+
+				if (string.IsNullOrEmpty(FileManagement.MainFile))
+				{
+					DataManager.Instance.ClearData();
+				}
+
+				DataManager.Instance.ParseData(FileManagement.MainFile);
+			});
 			GoBackCommand = new Command(() =>
 				{
 					DataManager.Instance.SelectedGame = DataManager.Instance.AllGames.GoBack(DataManager.Instance.SelectedGame);
@@ -181,6 +229,13 @@ namespace CSE_681_Project_1.Main
 				});
 
 			ChangeNewGameVisibilityCommand = new Command(() => IsAddGameDialogVisible = Visibility.Visible);
+
+			SaveFileDialogCommand = new Command(() =>
+			{
+				DialogHost.CloseDialogCommand.Execute(null, null);
+				DrawerHost.CloseDrawerCommand.Execute(null, null);
+				SaveFileDialog();
+			});
 		}
 
 		#endregion methods

@@ -1,6 +1,6 @@
 ﻿using MaterialDesignThemes.Wpf;
 
-namespace CSE_681_Project_1
+namespace CSE_681_Project_1.Main
 {
 	public static class SnackBarManager
 	{
