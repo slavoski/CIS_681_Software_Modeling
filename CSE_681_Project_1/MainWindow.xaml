@@ -6,7 +6,9 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:converter="clr-namespace:CSE_681_Project_1.Converters"
 		xmlns:dialog="clr-namespace:CSE_681_Project_1.Dialog"
+		xmlns:enum="clr-namespace:CSE_681_Project_1.Enums"
 		xmlns:vm="clr-namespace:CSE_681_Project_1.Main"
+		xmlns:sys="clr-namespace:System;assembly=mscorlib"
 		mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="1000"
 		TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -18,9 +20,22 @@
 	<Window.DataContext>
 		<vm:MainWindowViewModel />
 	</Window.DataContext>
+
 	<ContentControl.Resources>
 		<converter:GetDescriptionFromPropertyAddColon x:Key="GetDescriptionFromProperty" />
 		<converter:ConvertNumberToTime x:Key="ConvertNumberToTime" />
+		<converter:GetDescriptionFromEnum x:Key="GetDescriptionFromEnum" />
+
+		<ObjectDataProvider x:Key="EnumDataSource" ObjectType="{x:Type sys:Enum}" MethodName="GetValues">
+			<ObjectDataProvider.MethodParameters>
+				<x:Type TypeName="enum:Teams" />
+			</ObjectDataProvider.MethodParameters>
+		</ObjectDataProvider>
+		<ObjectDataProvider x:Key="TimeLineDataSource" ObjectType="{x:Type sys:Enum}" MethodName="GetValues">
+			<ObjectDataProvider.MethodParameters>
+				<x:Type TypeName="enum:TimeLine" />
+			</ObjectDataProvider.MethodParameters>
+		</ObjectDataProvider>
 	</ContentControl.Resources>
 	<Grid>
 		<Grid>
@@ -37,6 +52,22 @@
 				<Button ToolTip="New File" Content="{materialDesign:PackIcon Kind=FileDocumentPlus}" Command="{Binding CreateNewFileCommand}" />
 				<Button ToolTip="Open File" Content="{materialDesign:PackIcon Kind=FolderOpen}" Command="{Binding OpenCommand}" />
 				<Button ToolTip="Save File" Content="{materialDesign:PackIcon Kind=ContentSave}" Command="{Binding SaveCommand}" />
+				<Separator />
+				<ComboBox ItemsSource="{Binding Source={StaticResource TimeLineDataSource}}" SelectedIndex="{Binding SelectedYearIndex}">
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<Label Content="{Binding Path=.,Mode=OneWay, Converter={StaticResource GetDescriptionFromEnum}}" />
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+				<ComboBox ItemsSource="{Binding Source={StaticResource EnumDataSource}}" SelectedIndex="{Binding SelectedTeamIndex}">
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<Label Content="{Binding Path=.,Mode=OneWay, Converter={StaticResource GetDescriptionFromEnum}}" />
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+				<Button ToolTip="Get Data From Online" Content="{materialDesign:PackIcon Kind=Cloud}" Command="{Binding ParseFromWebCommand}" />
 			</ToolBar>
 			<GroupBox Grid.Row="1" Margin="10" Header="{Binding FileManagement.FileName}" materialDesign:ColorZoneAssist.Mode="SecondaryMid">
 				<ScrollViewer HorizontalScrollBarVisibility="Auto">
@@ -47,7 +78,16 @@
 			<TabControl Grid.Row="1" Grid.Column="2" Style="{StaticResource MaterialDesignFilledTabControl}" SelectedIndex="{Binding SelectedIndex}">
 				<TabItem Header="Games">
 					<Grid>
-						<ListView ItemsSource="{Binding Source={x:Static vm:DataManager.Instance}, Path=AllGames}" SelectedItem="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+
+						<StackPanel>
+							<Label Content="{Binding SelectedTeam}" />
+						</StackPanel>
+
+						<ListView Grid.Row="1" ItemsSource="{Binding Source={x:Static vm:DataManager.Instance}, Path=AllGames}" SelectedItem="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame}">
 							<ListView.ItemTemplate>
 								<DataTemplate>
 									<Grid>
@@ -56,8 +96,11 @@
 											<ColumnDefinition Width="*" MinWidth="100" />
 											<ColumnDefinition Width="Auto" />
 											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition Width="Auto" />
 										</Grid.ColumnDefinitions>
 										<Grid.RowDefinitions>
+											<RowDefinition />
 											<RowDefinition />
 											<RowDefinition />
 											<RowDefinition />
@@ -70,20 +113,36 @@
 											<Label Content="Home Team: " />
 											<Label Content="{Binding HomeTeamName}" />
 										</StackPanel>
-										<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-											<Label Content="VS " />
-										</StackPanel>
-
-										<StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-											<Label Content="Away Team:" />
-											<Label Content="{Binding VisitorTeamName}" />
-										</StackPanel>
-
-										<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
+										<StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Left">
 											<Label Content="Final: " />
 											<Label Content="{Binding IsFinal}" />
 										</StackPanel>
-										<StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left">
+
+										<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
+											<Label Content="{Binding WinningTeam}" />
+										</StackPanel>
+
+										<Image Grid.Column="1" Grid.RowSpan="4" Source="{Binding HomeTeamStats.BitmapImage}" Width="64" RenderOptions.BitmapScalingMode="Fant" />
+
+										<StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
+											<Label Content="VS " />
+										</StackPanel>
+
+										<Image Margin="20" Grid.Column="3" Grid.RowSpan="4" Source="{Binding VisTeamStats.BitmapImage}" Width="64" RenderTransformOrigin="0.5,0.5" RenderOptions.BitmapScalingMode="Fant">
+											<Image.RenderTransform>
+												<ScaleTransform ScaleX="-1" />
+											</Image.RenderTransform>
+										</Image>
+
+										<StackPanel Grid.Row="1" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right">
+											<Label Content="Away Team:" />
+											<Label Content="{Binding VisitorTeamName}" />
+										</StackPanel>
+										<StackPanel Grid.Row="2" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Left">
+											<Label Content="Final Score: " />
+											<Label Content="{Binding FinalScore}" />
+										</StackPanel>
+										<StackPanel Grid.Row="3" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Left">
 											<Label Content="Neutral: " />
 											<Label Content="{Binding Neutral}" />
 										</StackPanel>
@@ -91,7 +150,7 @@
 								</DataTemplate>
 							</ListView.ItemTemplate>
 						</ListView>
-						<Button Margin="0,0,40,20" HorizontalAlignment="Right" VerticalAlignment="Bottom" ToolTip="Add Game" Style="{DynamicResource MaterialDesignFloatingActionButton}" Command="{Binding ChangeNewGameVisibilityCommand}">
+						<Button Grid.Row="1" Margin="0,0,40,20" HorizontalAlignment="Right" VerticalAlignment="Bottom" ToolTip="Add Game" Style="{DynamicResource MaterialDesignFloatingActionButton}" Command="{Binding ChangeNewGameVisibilityCommand}">
 							<Button.Content>
 								<TextBlock Text="+" FontSize="64" FontStretch="UltraCondensed" FontWeight="ExtraLight" HorizontalAlignment="Center" VerticalAlignment="Center" />
 							</Button.Content>
@@ -127,6 +186,8 @@
 								<TextBlock Grid.Column="1" Margin="10,0,0,0" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.HomeTeamName}" />
 								<TextBlock Grid.Column="2"  Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisitorTeamName, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=visTeamName}" />
 								<TextBlock Grid.Column="3" Margin="10,0,0,0" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.VisitorTeamName}" />
+
+								<TextBlock Grid.ColumnSpan="2" HorizontalAlignment="Center" Grid.Column="1" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.WinningTeam}" />
 
 								<TextBlock Grid.Row="1" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.IsFinal, Converter={StaticResource GetDescriptionFromProperty}, ConverterParameter=isFinal}" />
 								<TextBlock Grid.Row="1" Grid.Column="1" Margin="10,0,0,0" HorizontalAlignment="Left" Text="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame.IsFinal}" />

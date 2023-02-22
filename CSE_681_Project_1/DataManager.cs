@@ -1,7 +1,10 @@
 ﻿using MvvmHelpers;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Documents;
+using static System.Net.WebRequestMethods;
 
 namespace CSE_681_Project_1.Main
 {
@@ -70,6 +73,22 @@ namespace CSE_681_Project_1.Main
 			{
 				result = "Deserialized data was empty";
 				ClearData();
+			}
+
+			return result;
+		}
+
+		public string ParseData(MatchUpStats matchUp)
+		{
+			var result = string.Empty;
+
+			if (matchUp.matchUpStats.Any())
+			{
+				AllGames.ReplaceRange(matchUp.matchUpStats.Select(g => new GameInfoViewModel(g)));
+			}
+			else
+			{
+				AllGames.Clear();
 			}
 
 			return result;

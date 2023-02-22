@@ -1,6 +1,11 @@
-﻿using MaterialDesignThemes.Wpf;
+﻿using CSE_681_Project_1.Enums;
+using CSE_681_Project_1.Extensions;
+using MaterialDesignThemes.Wpf;
 using MvvmHelpers;
 using MvvmHelpers.Commands;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -38,6 +43,16 @@ namespace CSE_681_Project_1.Main
 			}
 		}
 
+		public bool IsDialogSaveFileVisible
+		{
+			get => _isDialogSaveFileVisible;
+			set
+			{
+				_isDialogSaveFileVisible = value;
+				OnPropertyChanged(nameof(IsDialogSaveFileVisible));
+			}
+		}
+
 		public Visibility IsEditGameDialogVisible
 		{
 			get => _isEditGameDialogVisible;
@@ -68,11 +83,28 @@ namespace CSE_681_Project_1.Main
 			}
 		}
 
+		public string SelectedTeam => ((Teams)SelectedTeamIndex + 1).Description();
+
+		public int SelectedTeamIndex
+		{
+			get;
+			set;
+		}
+
+		public int SelectedYearIndex
+		{
+			get;
+			set;
+		} = 19;
+
 		public SnackbarMessageQueue SnackBoxMessage
 		{
 			get;
 			set;
 		} = new SnackbarMessageQueue();
+
+		public string URL => $"https://sports.snoozle.net/search/nfl/searchHandler?fileType=inline&statType=teamStats&season={Year}&teamName={SelectedTeamIndex + 1}";
+		public int Year => SelectedYearIndex + (int)TimeLine.One;
 
 		#endregion properties
 
@@ -108,17 +140,13 @@ namespace CSE_681_Project_1.Main
 			private set;
 		}
 
-		public bool IsDialogSaveFileVisible
+		public Command OpenCommand
 		{
-			get => _isDialogSaveFileVisible;
-			set
-			{
-				_isDialogSaveFileVisible = value;
-				OnPropertyChanged(nameof(IsDialogSaveFileVisible));
-			}
+			get;
+			private set;
 		}
 
-		public Command OpenCommand
+		public Command ParseFromWebCommand
 		{
 			get;
 			private set;
@@ -158,6 +186,23 @@ namespace CSE_681_Project_1.Main
 		#endregion constructor / destructor
 
 		#region methods
+
+		public static string GetEnumDescription(Teams value)
+		{
+			FieldInfo fi = value.GetType().GetField(value.ToString());
+			var results = string.Empty;
+			if (fi != null)
+			{
+				DescriptionAttribute[] attributes = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+
+				if (attributes != null && attributes.Any())
+				{
+					results = attributes.First().Description;
+				}
+			}
+
+			return results;
+		}
 
 		public async Task CreateGame()
 		{
@@ -235,6 +280,14 @@ namespace CSE_681_Project_1.Main
 				DialogHost.CloseDialogCommand.Execute(null, null);
 				DrawerHost.CloseDrawerCommand.Execute(null, null);
 				SaveFileDialog();
+			});
+
+			ParseFromWebCommand = new Command(() =>
+			{
+				var results = WebManagement.Instance.GetJsonFromURL<MatchUpStats>(URL);
+				FileManagement.MainFile = results.Item1;
+				DataManager.Instance.ParseData(results.Item2);
+				OnPropertyChanged(nameof(SelectedTeam));
 			});
 		}
 
