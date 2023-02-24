@@ -63,7 +63,7 @@ namespace CSE_681_Project_1
 
 		#region methods
 
-		public string CreateNewFile(string dataToWrite)
+		public string CreateNewFile(string dataToWrite, bool resetMainFile = true)
 		{
 			var result = "File Was Not Saved";
 			SaveFileDialog sfd = new SaveFileDialog()
@@ -81,7 +81,7 @@ namespace CSE_681_Project_1
 				result = SaveFile(dataToWrite);
 				result += "\n";
 				result += OpenFileWithPath(sfd.FileName, sfd.SafeFileName);
-				MainFile = "";
+				MainFile = resetMainFile ? "" : MainFile;
 			}
 
 			return result;
@@ -136,7 +136,14 @@ namespace CSE_681_Project_1
 			var result = "Data Saved Succesfully!";
 			if (!string.IsNullOrEmpty(dataToSave))
 			{
-				File.WriteAllText(m_fullFilePath, dataToSave);
+				if (string.IsNullOrEmpty(m_fullFilePath))
+				{
+					CreateNewFile(dataToSave, false);
+				}
+				else
+				{
+					File.WriteAllText(m_fullFilePath, dataToSave);
+				}
 			}
 			else
 			{

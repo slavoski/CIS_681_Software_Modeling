@@ -15,9 +15,9 @@ namespace CSE_681_Project_1.Main
 	{
 		#region member variables
 
+		private readonly Visibility _isEditGameDialogVisible = Visibility.Hidden;
 		private Visibility _isAddGameDialogVisible = Visibility.Hidden;
 		private bool _isDialogSaveFileVisible;
-		private Visibility _isEditGameDialogVisible = Visibility.Hidden;
 		private GameInfo _newGameInfo = new();
 		private int _selectedIndex;
 
@@ -83,13 +83,13 @@ namespace CSE_681_Project_1.Main
 			}
 		}
 
-		public string SelectedTeam => ((Teams)SelectedTeamIndex + 1).Description();
+		public string SelectedTeam => DataManager.Instance.SelectedGame != null ? ((Teams)SelectedTeamIndex + 1).Description() : "";
 
 		public int SelectedTeamIndex
 		{
 			get;
 			set;
-		}
+		} = 0;
 
 		public int SelectedYearIndex
 		{
@@ -174,15 +174,6 @@ namespace CSE_681_Project_1.Main
 			DataManager.Instance.PropertyChanged += Instance_PropertyChanged;
 		}
 
-		private void Instance_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == nameof(DataManager.Instance.SelectedGame) && FileManagement.IsFileLoaded == true)
-			{
-				SelectedIndex = 1;
-				OnPropertyChanged(nameof(GameInfoHeader));
-			}
-		}
-
 		#endregion constructor / destructor
 
 		#region methods
@@ -214,14 +205,14 @@ namespace CSE_681_Project_1.Main
 
 			IsAddGameDialogVisible = Visibility.Hidden;
 
-			FileManagement.MainFile = DataManager.Instance.SaveData;
+			FileManagement.MainFile = DataManager.Instance.SaveData();
 
 			await Task.CompletedTask;
 		}
 
 		public void SaveFileDialog()
 		{
-			SnackBarManager.SnackBoxMessage.Enqueue(FileManagement.SaveFile(DataManager.Instance.SaveData));
+			SnackBarManager.SnackBoxMessage.Enqueue(FileManagement.SaveFile(DataManager.Instance.SaveData()));
 		}
 
 		private void InitializeCommands()
@@ -254,7 +245,7 @@ namespace CSE_681_Project_1.Main
 				});
 			CreateNewFileCommand = new Command(() =>
 			{
-				SnackBarManager.SnackBoxMessage.Enqueue(FileManagement.CreateNewFile(DataManager.Instance.SaveData));
+				SnackBarManager.SnackBoxMessage.Enqueue(FileManagement.CreateNewFile(DataManager.Instance.SaveData()));
 
 				if (string.IsNullOrEmpty(FileManagement.MainFile))
 				{
@@ -292,5 +283,23 @@ namespace CSE_681_Project_1.Main
 		}
 
 		#endregion methods
+
+		#region event handlers
+
+		private void Instance_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(DataManager.Instance.SelectedGame) && FileManagement.IsFileLoaded == true)
+			{
+				SelectedIndex = 1;
+				OnPropertyChanged(nameof(GameInfoHeader));
+			}
+			else if (e.PropertyName == nameof(DataManager.Instance.MatchUp))
+			{
+				var selectedTeamCode = DataManager.Instance.MatchUp.MatchUpStats.FirstOrDefault(g => SelectedTeam.Contains(g.homeTeamName))?.homeStats.teamCode ?? 0;
+				DataManager.Instance.MatchUp.SetSelectedGameCode(selectedTeamCode);
+			}
+		}
+
+		#endregion event handlers
 	}
 }

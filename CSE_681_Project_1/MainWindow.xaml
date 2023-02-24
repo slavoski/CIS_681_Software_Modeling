@@ -79,20 +79,29 @@
 				<TabItem Header="Games">
 					<Grid>
 						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="*" />
+							<RowDefinition Height="30" />
+							<RowDefinition Height="15" />
+							<RowDefinition />
 						</Grid.RowDefinitions>
 
-						<StackPanel>
-							<Label Content="{Binding SelectedTeam}" />
+						<StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding  Path=Visibility, Source={x:Static vm:DataManager.Instance}}">
+							<Label Content="{Binding SelectedTeam}" MinWidth="125" />
+							<Label Content="Wins: " />
+							<Label Content="{Binding Path=MatchUp.TotalWins, Source={x:Static vm:DataManager.Instance}}" MinWidth="40" />
+							<Label Content="Losses: " />
+							<Label Content="{Binding Path=MatchUp.TotalLosses, Source={x:Static vm:DataManager.Instance}}" MinWidth="40" />
+							<Label Content="Total Games: " />
+							<Label Content="{Binding Path=MatchUp.MatchUpStats.Count, Source={x:Static vm:DataManager.Instance}}" MinWidth="40" />
 						</StackPanel>
 
-						<ListView Grid.Row="1" ItemsSource="{Binding Source={x:Static vm:DataManager.Instance}, Path=AllGames}" SelectedItem="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame}">
+						<Separator Grid.Row="1" />
+
+						<ListView Grid.Row="2" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding Source={x:Static vm:DataManager.Instance}, Path=AllGames}" SelectedItem="{Binding Source={x:Static vm:DataManager.Instance}, Path=SelectedGame}">
 							<ListView.ItemTemplate>
 								<DataTemplate>
 									<Grid>
 										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="Auto" MinWidth="150" />
+											<ColumnDefinition Width="Auto" MinWidth="175" />
 											<ColumnDefinition Width="*" MinWidth="100" />
 											<ColumnDefinition Width="Auto" />
 											<ColumnDefinition Width="Auto" />
@@ -118,16 +127,9 @@
 											<Label Content="{Binding IsFinal}" />
 										</StackPanel>
 
-										<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
-											<Label Content="{Binding WinningTeam}" />
-										</StackPanel>
-
+										<Label Grid.Row="2" HorizontalAlignment="Left" Content="{Binding WinningTeam}" />
 										<Image Grid.Column="1" Grid.RowSpan="4" Source="{Binding HomeTeamStats.BitmapImage}" Width="64" RenderOptions.BitmapScalingMode="Fant" />
-
-										<StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
-											<Label Content="VS " />
-										</StackPanel>
-
+										<Label Grid.RowSpan="4" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Content="VS " />
 										<Image Margin="20" Grid.Column="3" Grid.RowSpan="4" Source="{Binding VisTeamStats.BitmapImage}" Width="64" RenderTransformOrigin="0.5,0.5" RenderOptions.BitmapScalingMode="Fant">
 											<Image.RenderTransform>
 												<ScaleTransform ScaleX="-1" />
@@ -291,7 +293,7 @@
 			<materialDesign:DialogHost.DialogContent>
 				<StackPanel>
 
-					<TextBlock Text="Save Over Current File" />
+					<TextBlock Text="Save?" />
 
 					<Button Command="{Binding SaveFileDialogCommand}">Ok</Button>
 					<Button Grid.Column="2" Command="materialDesign:DialogHost.CloseDialogCommand" >Cancel</Button>

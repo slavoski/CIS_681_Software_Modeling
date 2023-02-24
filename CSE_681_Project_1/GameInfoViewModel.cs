@@ -11,6 +11,7 @@ namespace CSE_681_Project_1
 		private TeamInfoViewModel _homeTeamStats;
 		private TeamInfoViewModel _visTeamStats;
 		private string _winningTeam;
+		private int _winningTeamGameCode;
 
 		#endregion member variables
 
@@ -28,6 +29,7 @@ namespace CSE_681_Project_1
 		public string VisitorTeamName => _gameInfo.visTeamName;
 		public TeamInfoViewModel VisTeamStats => _visTeamStats;
 		public string WinningTeam => _winningTeam;
+		public int WinningTeamGameCode => _winningTeamGameCode;
 
 		#endregion Properties
 
@@ -38,7 +40,9 @@ namespace CSE_681_Project_1
 			_gameInfo = gameInfo;
 			_homeTeamStats = new TeamInfoViewModel(gameInfo.homeStats);
 			_visTeamStats = new TeamInfoViewModel(gameInfo.visStats);
+
 			_winningTeam = "Winning Team: " + (HomeTeamWon ? HomeTeamName : VisitorTeamName);
+			_winningTeamGameCode = HomeTeamWon ? _homeTeamStats.TeamCode : _visTeamStats.TeamCode;
 		}
 
 		#endregion constructor / destructor

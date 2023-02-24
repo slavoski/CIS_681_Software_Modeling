@@ -1,10 +1,8 @@
 ﻿using MvvmHelpers;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Documents;
-using static System.Net.WebRequestMethods;
+using System.Windows;
 
 namespace CSE_681_Project_1.Main
 {
@@ -13,7 +11,9 @@ namespace CSE_681_Project_1.Main
 		#region member variables
 
 		private static readonly Lazy<DataManager> _instance = new Lazy<DataManager>(() => new DataManager());
+		private MatchUpStatsViewModel _matchUp = new(new());
 		private GameInfoViewModel _selectedGame = new(new());
+		private Visibility _visibility = Visibility.Collapsed;
 
 		#endregion member variables
 
@@ -30,6 +30,16 @@ namespace CSE_681_Project_1.Main
 			set;
 		} = new ModifyCollectionIndex<GameInfoViewModel>();
 
+		public MatchUpStatsViewModel MatchUp
+		{
+			get => _matchUp;
+			set
+			{
+				_matchUp = value;
+				OnPropertyChanged(nameof(MatchUp));
+			}
+		}
+
 		public GameInfoViewModel SelectedGame
 		{
 			get => _selectedGame;
@@ -40,14 +50,23 @@ namespace CSE_681_Project_1.Main
 			}
 		}
 
+		public Visibility Visibility
+		{
+			get => _visibility;
+			set
+			{
+				_visibility = value;
+				OnPropertyChanged(nameof(Visibility));
+			}
+		}
+
 		#endregion properties
 
 		#region methods
 
-		public string SaveData => JsonConvert.SerializeObject(DataManager.Instance.AllGames.Select(p => p.JSONDeserialize), Formatting.Indented);
-
 		public void ClearData()
 		{
+			MatchUp?.MatchUpStats?.Clear();
 			AllGames.Clear();
 		}
 
@@ -84,11 +103,29 @@ namespace CSE_681_Project_1.Main
 
 			if (matchUp.matchUpStats.Any())
 			{
+				MatchUp = new MatchUpStatsViewModel(matchUp);
 				AllGames.ReplaceRange(matchUp.matchUpStats.Select(g => new GameInfoViewModel(g)));
+				Visibility = Visibility.Visible;
 			}
 			else
 			{
 				AllGames.Clear();
+				Visibility = Visibility.Collapsed;
+			}
+
+			return result;
+		}
+
+		public string SaveData()
+		{
+			var result = string.Empty;
+			if (MatchUp.MatchUpStats != null && MatchUp.MatchUpStats.Any())
+			{
+				result = JsonConvert.SerializeObject(MatchUp.JSONDeserialize, Formatting.Indented);
+			}
+			else
+			{
+				result = JsonConvert.SerializeObject(AllGames.Select(p => p.JSONDeserialize), Formatting.Indented);
 			}
 
 			return result;
