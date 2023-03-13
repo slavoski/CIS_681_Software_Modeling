@@ -15,20 +15,22 @@
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition />
-			<RowDefinition />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<Button Grid.Row="1" Width="130" Height="40" Content="Press For Output" Command="{Binding DisplayOutputCommand}" />
+		<StackPanel Orientation="Horizontal">
+			<Label Content="Number of Processes: " />
+			<TextBox Width="130" Text="{Binding NumberOfProcesses}" />
+			<Button Width="130" Height="40" Content="Multiprocess" Command="{Binding MultiProcessCommand}" />
+		</StackPanel>
 
-		<Grid RenderTransformOrigin="0.416,0.506">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="37*" />
-				<ColumnDefinition Width="63*" />
-			</Grid.ColumnDefinitions>
-			<Label Content="Enter Content To Display:" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="140" />
-			<TextBox Grid.Column="1" Text="{Binding NewContent}" Background="LightYellow" Margin="3,93,3,92" />
-		</Grid>
+		<StackPanel Grid.Row="1" Orientation="Horizontal">
+			<Label Content="Number of Threads: " />
+			<TextBox Width="130" Text="{Binding NumberOfThreads}" />
+			<Button Width="130" Height="40" Content="Multi Thread" Command="{Binding MultiThreadCommand}" />
+		</StackPanel>
+
 		<TextBlock Grid.Column="2" Grid.RowSpan="2" Text="{Binding Content}" Background="LightBlue" />
 	</Grid>
 </Window>
